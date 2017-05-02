@@ -6,7 +6,7 @@ import merge from 'lodash.merge'
 const Wrapper = styled.div`
   display: flex;
   transform: translate3d(${props => props.translateOffset}px, 0, 0);
-  transition: transform 300ms ease-in-out;
+  transition: ${props => (props.isDragging) ? 'none' : 'transform 300ms ease-in-out'};
   width: ${props => props.trackWidth}px
 `
 
@@ -14,6 +14,8 @@ const Track = (props) => {
   const {
     children,
     currentSlide,
+    dragOffsetX,
+    isDragging,
     slidesToShow,
     width
   } = props
@@ -23,9 +25,14 @@ const Track = (props) => {
   const slideWidth = width / slidesToShow
   const trackWidth = slideWidth * children.length
   const translateOffset = currentSlide * slideWidth * -1
+  const transform = (dragOffsetX)
+    ? `translate3d(${translateOffset + dragOffsetX}px, 0, 0)`
+    : null
 
   return (
     <Wrapper
+      isDragging={isDragging}
+      style={{ transform }}
       translateOffset={translateOffset}
       trackWidth={trackWidth}
     >
@@ -46,6 +53,8 @@ const Track = (props) => {
 Track.propTypes = {
   children: PropTypes.node,
   currentSlide: PropTypes.number,
+  dragOffsetX: PropTypes.number,
+  isDragging: PropTypes.bool,
   slidesToShow: PropTypes.number,
   width: PropTypes.number
 }

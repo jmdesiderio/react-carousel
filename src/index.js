@@ -6,12 +6,11 @@ const slideStyles = {
   alignItems: 'center',
   display: 'flex',
   justifyContent: 'center',
-  height: '500px'
+  height: '400px'
 }
 
 const settings = {
-  slidesToShow: 1,
-  slidesToScroll: 1
+  slidesToShow: 1
 }
 
 const Example = () => (
