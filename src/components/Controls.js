@@ -10,13 +10,13 @@ const Wrapper = styled.div`
 const DefaultButton = styled.button`
   align-items: center;
   background-color: #444;
-  border-radius: 100%;
+  border-radius: 2px;
   border: 0;
   color: #fff;
   cursor: pointer;
   display: flex;
   font-size: 24px;
-  height: 40px;
+  height: 80px;
   justify-content: center;
   line-height: 1;
   opacity: .6;
@@ -34,7 +34,7 @@ const DefaultButton = styled.button`
 `
 
 const DefaultArrowLeft = styled(DefaultButton)`
-  left: 20px;
+  left: 30px;
 
   &::after {
     content: '\\2190'
@@ -42,7 +42,7 @@ const DefaultArrowLeft = styled(DefaultButton)`
 `
 
 const DefaultArrowRight = styled(DefaultButton)`
-  right: 20px;
+  right: 30px;
 
   &::after {
     content: '\\2192'

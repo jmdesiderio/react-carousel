@@ -19,12 +19,12 @@ class Carousel extends Component {
       currentSlide: 0,
       dragStartX: null,
       dragOffsetX: null,
-      height: null,
       numberOfSlides: this.props.children.length,
       shouldTransition: false,
       width: null
     }
 
+    this.carouselNode = null
     this.eventuallyDisableTransitionsTimeoutId = null
   }
 
@@ -41,10 +41,7 @@ class Carousel extends Component {
   }
 
   updateDimensions = () => {
-    this.setState({
-      height: null,
-      width: this.carouselNode.offsetWidth
-    })
+    this.setState({ width: this.carouselNode.offsetWidth })
   }
 
   handleKeyDown = ({ key }) => {

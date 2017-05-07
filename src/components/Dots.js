@@ -12,7 +12,7 @@ const Wrapper = styled.div`
 `
 
 const Dot = styled.div`
-  background-color: ${props => props.isCurrentSlide ? '#000' : '#666'}
+  background-color: ${p => p.isCurrentSlide ? '#000' : '#666'}
   border-radius: 100%;
   cursor: pointer;
   height: 10px;
