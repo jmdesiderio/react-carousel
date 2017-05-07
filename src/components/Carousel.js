@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-import DisplayWindow from './DisplayWindow'
-import Track from './Track'
-import Dots from './Dots'
 import Controls from './Controls'
+import DisplayWindow from './DisplayWindow'
+import Dots from './Dots'
+import Track from './Track'
 
 const Wrapper = styled.div`
   position: relative;
@@ -20,35 +20,35 @@ class Carousel extends Component {
       dragStartX: null,
       dragOffsetX: null,
       height: null,
-      isDragging: false,
-      shouldTransition: false,
       numberOfSlides: this.props.children.length,
+      shouldTransition: false,
       width: null
     }
+
+    this.eventuallyDisableTransitionsTimeoutId = null
   }
 
   componentDidMount () {
-    this.updateWidth()
-    window.addEventListener('resize', this.updateWidth)
+    this.updateDimensions()
+    window.addEventListener('resize', this.updateDimensions)
     window.addEventListener('keydown', this.handleKeyDown)
   }
 
   componentWillUnmount () {
     clearTimeout(this.eventuallyDisableTransitionsTimeoutId)
-    window.removeEventListener('resize', this.updateWidth)
+    window.removeEventListener('resize', this.updateDimensions)
     window.removeEventListener('keydown', this.handleKeyDown)
   }
 
-  updateWidth = () => {
-    this.setState({ width: this.carouselNode.offsetWidth })
+  updateDimensions = () => {
+    this.setState({
+      height: null,
+      width: this.carouselNode.offsetWidth
+    })
   }
 
-  updateHeight = () => {
-    this.setState({ height: null })
-  }
-
-  handleKeyDown = (e) => {
-    switch (e.key) {
+  handleKeyDown = ({ key }) => {
+    switch (key) {
       case 'ArrowLeft':
         return this.goToPreviousSlide()
       case 'ArrowRight':
@@ -56,19 +56,15 @@ class Carousel extends Component {
     }
   }
 
-  handleDragStart = (e) => {
-    this.setState({
-      dragStartX: e.clientX,
-      isDragging: true
-    })
+  handleDragStart = ({ clientX }) => {
+    this.setState({ dragStartX: clientX })
 
     window.addEventListener('mousemove', this.handleDragMove)
     window.addEventListener('mouseup', this.handleDragEnd)
   }
 
-  handleDragMove = (e) => {
-    const dragOffsetX = e.clientX - this.state.dragStartX
-    this.setState({ dragOffsetX })
+  handleDragMove = ({ clientX }) => {
+    this.setState({ dragOffsetX: clientX - this.state.dragStartX })
   }
 
   handleDragEnd = () => {
@@ -80,17 +76,16 @@ class Carousel extends Component {
     } else if (this.state.dragOffsetX < this.state.width / -6) {
       this.goToNextSlide()
     } else {
-      this.enableAndEventuallyDisableTransitions()
+      this.enableThenEventuallyDisableTransitions()
     }
 
     this.setState({
       dragStartX: null,
-      dragOffsetX: null,
-      isDragging: false
+      dragOffsetX: null
     })
   }
 
-  enableAndEventuallyDisableTransitions () {
+  enableThenEventuallyDisableTransitions () {
     this.setState({ shouldTransition: true })
     this.eventuallyDisableTransitions()
   }
@@ -116,16 +111,17 @@ class Carousel extends Component {
 
   goToNextSlide = () => {
     if (!this.props.isInfinite && this.state.currentSlide === this.state.numberOfSlides - 1) {
-      return this.enableAndEventuallyDisableTransitions()
+      return this.enableThenEventuallyDisableTransitions()
     }
 
     const nextSlideIndex = (this.state.currentSlide + 1) % this.state.numberOfSlides
+
     this.goToSlide(nextSlideIndex)
   }
 
   goToPreviousSlide = () => {
     if (!this.props.isInfinite && this.state.currentSlide === 0) {
-      return this.enableAndEventuallyDisableTransitions()
+      return this.enableThenEventuallyDisableTransitions()
     }
 
     const previousSlideIndex = (this.state.currentSlide === 0)
@@ -137,6 +133,13 @@ class Carousel extends Component {
 
   render () {
     const {
+      goToSlide,
+      goToPreviousSlide,
+      goToNextSlide
+    } = this
+
+    const {
+      children,
       isInfinite,
       slidesToShow,
       transitionDuration
@@ -145,7 +148,6 @@ class Carousel extends Component {
     const {
       currentSlide,
       dragOffsetX,
-      isDragging,
       shouldTransition,
       numberOfSlides,
       width
@@ -161,25 +163,26 @@ class Carousel extends Component {
             <Track
               currentSlide={currentSlide}
               dragOffsetX={dragOffsetX}
-              isDragging={isDragging}
+              isInfinite={isInfinite}
+              numberOfSlides={numberOfSlides}
               shouldTransition={shouldTransition}
               slidesToShow={slidesToShow}
               transitionDuration={transitionDuration}
               width={width}
             >
-              {this.props.children}
+              {children}
             </Track>
           </DisplayWindow>
           <Dots
-            goToSlide={this.goToSlide}
+            goToSlide={goToSlide}
             currentSlide={currentSlide}
             numberOfSlides={numberOfSlides}
           />
           <Controls
             currentSlide={currentSlide}
             numberOfSlides={numberOfSlides}
-            goToPreviousSlide={this.goToPreviousSlide}
-            goToNextSlide={this.goToNextSlide}
+            goToPreviousSlide={goToPreviousSlide}
+            goToNextSlide={goToNextSlide}
             isInfinite={isInfinite}
           />
         </Wrapper>
@@ -190,9 +193,9 @@ class Carousel extends Component {
 
 Carousel.propTypes = {
   children: PropTypes.node.isRequired,
-  isInfinite: PropTypes.bool,
-  slidesToShow: PropTypes.number,
-  transitionDuration: PropTypes.number
+  isInfinite: PropTypes.bool.isRequired,
+  slidesToShow: PropTypes.number.isRequired,
+  transitionDuration: PropTypes.number.isRequired
 }
 
 Carousel.defaultProps = {

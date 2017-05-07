@@ -12,10 +12,9 @@ const Wrapper = styled.div`
 
 const Track = (props) => {
   const {
-    children,
-    currentSlide,
     dragOffsetX,
-    isDragging,
+    isInfinite,
+    numberOfSlides,
     shouldTransition,
     slidesToShow,
     transitionDuration,
@@ -23,6 +22,15 @@ const Track = (props) => {
   } = props
 
   if (!width) return null
+
+  const children = [ ...props.children ]
+  let currentSlide = props.currentSlide
+
+  if (isInfinite) {
+    children.push(children[0])
+    children.unshift(children[numberOfSlides - 1])
+    currentSlide = props.currentSlide + 1
+  }
 
   const slideWidth = width / slidesToShow
   const trackWidth = slideWidth * children.length
@@ -33,7 +41,6 @@ const Track = (props) => {
 
   return (
     <Wrapper
-      isDragging={isDragging}
       shouldTransition={shouldTransition}
       style={{ transform }}
       transitionDuration={transitionDuration}
@@ -58,7 +65,8 @@ Track.propTypes = {
   children: PropTypes.node,
   currentSlide: PropTypes.number,
   dragOffsetX: PropTypes.number,
-  isDragging: PropTypes.bool,
+  isInfinite: PropTypes.bool,
+  numberOfSlides: PropTypes.number,
   shouldTransition: PropTypes.bool,
   slidesToShow: PropTypes.number,
   transitionDuration: PropTypes.number,

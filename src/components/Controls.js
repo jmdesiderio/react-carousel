@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   justify-content: center;
 `
 
-const Button = styled.button`
+const DefaultButton = styled.button`
   align-items: center;
   background-color: #444;
   border-radius: 100%;
@@ -33,16 +33,26 @@ const Button = styled.button`
   }
 `
 
-const LeftArrow = styled(Button)`
+const DefaultArrowLeft = styled(DefaultButton)`
   left: 20px;
+
+  &::after {
+    content: '\\2190'
+  }
 `
 
-const RightArrow = styled(Button)`
+const DefaultArrowRight = styled(DefaultButton)`
   right: 20px;
+
+  &::after {
+    content: '\\2192'
+  }
 `
 
 const Controls = (props) => {
   const {
+    ArrowLeft,
+    ArrowRight,
     currentSlide,
     goToPreviousSlide,
     goToNextSlide,
@@ -50,34 +60,33 @@ const Controls = (props) => {
     numberOfSlides
   } = props
 
+  const isFirstSlide = currentSlide === 0
+  const isLastSlide = currentSlide === numberOfSlides - 1
+
+  const hideArrowLeft = !isInfinite && isFirstSlide
+  const hideArrowRight = !isInfinite && isLastSlide
+
   return (
     <Wrapper>
-      {
-        (!isInfinite && currentSlide === 0)
-          ? null
-          : <LeftArrow
-            dangerouslySetInnerHTML={{ __html: '&larr;' }}
-            onClick={goToPreviousSlide}
-          />
-      }
-      {
-        (!isInfinite && currentSlide === numberOfSlides - 1)
-          ? null
-          : <RightArrow
-            dangerouslySetInnerHTML={{ __html: '&rarr;' }}
-            onClick={goToNextSlide}
-          />
-      }
+      {(hideArrowLeft) ? null : <ArrowLeft onClick={goToPreviousSlide} />}
+      {(hideArrowRight) ? null : <ArrowRight onClick={goToNextSlide} />}
     </Wrapper>
   )
 }
 
 Controls.propTypes = {
+  ArrowLeft: PropTypes.func,
+  ArrowRight: PropTypes.func,
   currentSlide: PropTypes.number,
   goToPreviousSlide: PropTypes.func,
   goToNextSlide: PropTypes.func,
   isInfinite: PropTypes.bool,
   numberOfSlides: PropTypes.number
+}
+
+Controls.defaultProps = {
+  ArrowLeft: DefaultArrowLeft,
+  ArrowRight: DefaultArrowRight
 }
 
 export default Controls
