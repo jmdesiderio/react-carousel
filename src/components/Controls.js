@@ -42,25 +42,42 @@ const RightArrow = styled(Button)`
 `
 
 const Controls = (props) => {
-  const { goToPreviousSlide, goToNextSlide } = props
+  const {
+    currentSlide,
+    goToPreviousSlide,
+    goToNextSlide,
+    isInfinite,
+    numberOfSlides
+  } = props
 
   return (
     <Wrapper>
-      <LeftArrow
-        dangerouslySetInnerHTML={{ __html: '&larr;' }}
-        onClick={goToPreviousSlide}
-      />
-      <RightArrow
-        dangerouslySetInnerHTML={{ __html: '&rarr;' }}
-        onClick={goToNextSlide}
-      />
+      {
+        (!isInfinite && currentSlide === 0)
+          ? null
+          : <LeftArrow
+            dangerouslySetInnerHTML={{ __html: '&larr;' }}
+            onClick={goToPreviousSlide}
+          />
+      }
+      {
+        (!isInfinite && currentSlide === numberOfSlides - 1)
+          ? null
+          : <RightArrow
+            dangerouslySetInnerHTML={{ __html: '&rarr;' }}
+            onClick={goToNextSlide}
+          />
+      }
     </Wrapper>
   )
 }
 
 Controls.propTypes = {
+  currentSlide: PropTypes.number,
   goToPreviousSlide: PropTypes.func,
-  goToNextSlide: PropTypes.func
+  goToNextSlide: PropTypes.func,
+  isInfinite: PropTypes.bool,
+  numberOfSlides: PropTypes.number
 }
 
 export default Controls

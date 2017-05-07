@@ -9,12 +9,14 @@ const slideStyles = {
   height: '400px'
 }
 
-const settings = {
-  slidesToShow: 1
-}
+// const settings = {
+//   isInfinite: false,
+//   slidesToShow: 1,
+//   transitionDuration: 300
+// }
 
 const Example = () => (
-  <Carousel {...settings}>
+  <Carousel>
     <div style={{ backgroundColor: '#F44336', ...slideStyles }}>Test 1</div>
     <div style={{ backgroundColor: '#2196F3', ...slideStyles }}>Test 2</div>
     <div style={{ backgroundColor: '#4CAF50', ...slideStyles }}>Test 3</div>
